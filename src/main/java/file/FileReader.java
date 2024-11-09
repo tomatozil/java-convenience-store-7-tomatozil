@@ -7,12 +7,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class FileReader {
-    private static final String PATH = "src/main/java/file/products.md";
-
     private final String buffer;
 
     public FileReader(){
-        this.buffer = readFile(Paths.get(PATH));
+        this.buffer = readFile(makePath());
     }
 
     public String readFile(Path path) {
@@ -29,5 +27,10 @@ public class FileReader {
             System.out.println("[Error] " + e);
         }
         return String.valueOf(result);
+    }
+
+    protected Path makePath() {
+        String path = "src/main/java/file/products.md";
+        return Paths.get(path);
     }
 }
