@@ -1,36 +1,38 @@
 package file;
 import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 public class FileReader {
     private final String buffer;
 
-    public FileReader(){
+    public FileReader() {
         this.buffer = readFile(makePath());
     }
 
     public String readFile(Path path) {
         StringBuilder result = new StringBuilder();
-        try (
-                InputStream in = Files.newInputStream(path);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in))
-        ) {
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line).append("\n");
             }
+            return String.valueOf(result);
         } catch (Exception e) {
-            System.out.println("[Error] " + e);
+            throw new IllegalArgumentException(e);
         }
-        return String.valueOf(result);
     }
 
-    protected Path makePath() {
-        String path = "src/main/java/file/products.md";
-        return Paths.get(path);
+    protected Path makePath(){
+        String resourceFileName = "products.md";
+        Path path;
+        try  {
+            path = Paths.get(getClass().getClassLoader().getResource(resourceFileName).toURI());
+            return path;
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
