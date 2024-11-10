@@ -3,21 +3,31 @@ package store;
 import view.InputView;
 
 public class StockManager {
-    public OrderResult getOrderResult(ProductInventory productInventory, int orderQuantity) {
-        // not a promotional product
-        if (!productInventory.hasPromotion())
-            return new OrderResult(orderQuantity, 0);
+    public OrderResult getOrderResult(ProductInventory inventory, int orderQuantity) {
+        int modifiedQuantity = getModifiedQuantity(inventory, orderQuantity);
+        return inventory.calculateBuyAndGetQuantities(modifiedQuantity);
+    }
 
-        // total quantity is insufficient
-        productInventory.canOrder(orderQuantity);
-
-        // have to bring more
-        if (productInventory.needAdditionalQuantity(orderQuantity)) {
-            String answer = InputView.readAdditionalQuantity(productInventory.getName());
-            if (answer.equalsIgnoreCase("Y"))
-                orderQuantity += 1;
+    protected int getModifiedQuantity(ProductInventory inventory, int orderQuantity) {
+        if (!inventory.hasPromotion()) {
+            return orderQuantity;
         }
 
-        return productInventory.calculateBuyAndGetQuantities(orderQuantity);
+        inventory.canOrder(orderQuantity);
+
+        if (inventory.needAdditionalQuantity(orderQuantity)) {
+            orderQuantity = applyUserInput(inventory, orderQuantity);
+        }
+        return orderQuantity;
     }
+
+    protected int applyUserInput(ProductInventory inventory, int orderQuantity) {
+        String answer = InputView.readAdditionalQuantity(inventory.getName());
+
+        if (answer.equalsIgnoreCase("Y")) {
+            orderQuantity += 1;
+        }
+        return orderQuantity;
+    }
+
 }
