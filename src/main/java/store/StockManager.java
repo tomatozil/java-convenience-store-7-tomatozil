@@ -3,26 +3,26 @@ package store;
 import view.InputView;
 
 public class StockManager {
-    public OrderResult getOrderResult(ProductInventory inventory, int orderQuantity) {
-        int modifiedQuantity = getModifiedQuantity(inventory, orderQuantity);
-        return inventory.calculateBuyAndGetQuantities(modifiedQuantity);
+    public OrderResult getOrderResult(Item item, int orderQuantity) {
+        int modifiedQuantity = getModifiedQuantity(item, orderQuantity);
+        return item.calculateBuyAndGetQuantities(modifiedQuantity);
     }
 
-    protected int getModifiedQuantity(ProductInventory inventory, int orderQuantity) {
-        if (!inventory.hasPromotion()) {
+    protected int getModifiedQuantity(Item item, int orderQuantity) {
+        if (!item.hasPromotion()) {
             return orderQuantity;
         }
 
-        inventory.canOrder(orderQuantity);
+        item.canOrder(orderQuantity);
 
-        if (inventory.needAdditionalQuantity(orderQuantity)) {
-            orderQuantity = applyUserInput(inventory, orderQuantity);
+        if (item.needAdditionalQuantity(orderQuantity)) {
+            orderQuantity = applyUserInput(item, orderQuantity);
         }
         return orderQuantity;
     }
 
-    protected int applyUserInput(ProductInventory inventory, int orderQuantity) {
-        String answer = InputView.readAdditionalQuantity(inventory.getName());
+    protected int applyUserInput(Item item, int orderQuantity) {
+        String answer = InputView.readAdditionalQuantity(item.getName());
 
         if (answer.equalsIgnoreCase("Y")) {
             orderQuantity += 1;
