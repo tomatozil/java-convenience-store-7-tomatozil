@@ -6,32 +6,24 @@ public class MembershipManager {
     private static final int LIMIT_DISCOUNT_PRICE = 8000;
     private static final double DISCOUNT_RATE = 0.3;
 
-    public Discount membershipDiscount(Item item, Order order) {
-        String itemName = item.getName();
-        int itemPrice = item.getPrice();
-
-        return applyMembershipDiscount(itemName, itemPrice, order);
+    public int membershipDiscount(int price) {
+        return applyMembershipDiscount(price);
     }
 
-    protected Discount applyMembershipDiscount(String name, int price, Order order) {
-        int afterPromotion = order.deductFreePrice(price);
-        int membershipDiscount = (int) (afterPromotion * DISCOUNT_RATE);
-        int afterMembership = afterPromotion - membershipDiscount;
+    protected int applyMembershipDiscount(int price) {
+        int discountPrice = (int) (price * DISCOUNT_RATE);
 
-        if (!getUserInput(name)) {
-            return new Discount(0, afterPromotion);
+        if (!getUserInput()) {
+            return price;
         }
-        if (membershipDiscount > LIMIT_DISCOUNT_PRICE) {
-            return new Discount(LIMIT_DISCOUNT_PRICE, afterPromotion - LIMIT_DISCOUNT_PRICE);
+        if (discountPrice > LIMIT_DISCOUNT_PRICE) {
+            return price - LIMIT_DISCOUNT_PRICE;
         }
-        return new Discount(membershipDiscount, afterMembership);
+        return price - discountPrice;
     }
 
-    protected boolean getUserInput(String itemName) {
-        String answer = InputView.readMembershipDiscount(itemName);
-        if (answer.equalsIgnoreCase("Y")) {
-            return true;
-        }
-        return false;
+    protected boolean getUserInput() {
+        String answer = InputView.readMembershipDiscount();
+        return answer.equalsIgnoreCase("Y");
     }
 }

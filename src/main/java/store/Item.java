@@ -36,7 +36,7 @@ public class Item {
 
     public void canOrder(int orderQuantity) {
         if (orderQuantity > generalQuantity + eventQuantity) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("재고 수량을 초과하여 구매할 수 없습니다. 다시 입력해 주세요.");
         }
     }
 
@@ -48,7 +48,7 @@ public class Item {
         return orderQuantity % promotionType.buyPlusGet() == promotionType.getBuy();
     }
 
-    public Order calculateBuyAndGetQuantities(int orderQuantity) {
+    public StockRequirement calculateBuyAndGetQuantities(int orderQuantity) {
         int total = promotionType.buyPlusGet();
         int buy = promotionType.getBuy();
         int get = promotionType.getGet();
@@ -57,7 +57,7 @@ public class Item {
         int haveToBuy = bundles * buy + (orderQuantity - bundles * total);
         int getFree = bundles * get;
 
-        return new Order(haveToBuy, getFree);
+        return new StockRequirement(haveToBuy, getFree);
     }
 
     @Override

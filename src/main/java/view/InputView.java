@@ -8,7 +8,7 @@ public class InputView {
         return getInputYOrN();
     }
 
-    public static String readMembershipDiscount(String itemName) {
+    public static String readMembershipDiscount() {
         System.out.print("멤버십 할인을 받으시겠습니까? (Y/N)\n");
         return getInputYOrN();
     }

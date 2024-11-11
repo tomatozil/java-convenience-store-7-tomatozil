@@ -1,10 +1,12 @@
 package store;
 
+import java.util.List;
 import view.InputView;
 
 public class StockManager {
-    public Order order(Item item, int orderQuantity) {
+    public StockRequirement getItemStock(Item item, int orderQuantity) {
         int modifiedQuantity = getModifiedQuantity(item, orderQuantity);
+
         return item.calculateBuyAndGetQuantities(modifiedQuantity);
     }
 
