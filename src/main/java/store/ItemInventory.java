@@ -3,31 +3,37 @@ package store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import view.OutputView;
 
 public class ItemInventory {
-    private final List<Item> itemList;
+    private final List<Item> items;
+
 
     public ItemInventory() {
-        this.itemList = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
     public int productCnt() {
-        return itemList.size();
+        return items.size();
     }
 
     public void registerItem(Item newOne) {
-        itemList.stream()
+        items.stream()
                 .filter(origin -> origin.getName().equals(newOne.getName()))
-                .findFirst()
+                .findAny()
                 .ifPresentOrElse(
-                        origin -> origin.updateProduct(newOne),
-                        () -> itemList.add(newOne)
+                        origin -> origin.updateItemInfo(newOne),
+                        () -> items.add(newOne)
                 );
     }
 
     public Optional<Item> findItem(String name) {
-        return itemList.stream()
+        return items.stream()
                 .filter(origin -> origin.getName().equals(name))
-                .findFirst();
+                .findAny();
+    }
+
+    public void printItems() {
+        OutputView.printProducts(items);
     }
 }

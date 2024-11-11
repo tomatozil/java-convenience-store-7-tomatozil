@@ -12,7 +12,7 @@ public class MembershipManagerTest {
 
     @BeforeEach
     void 초기_세팅() {
-        item = new Item("에너지바", 1500, 0, 5, PromotionType.MD_RECOMMEND);
+        item = new Item("에너지바", 1500, 0, 5, "MD추천상품");
         stockRequirement = new StockRequirement(1, 1);
     }
 

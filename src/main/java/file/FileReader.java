@@ -6,15 +6,11 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class FileReader {
-    private final String buffer;
 
-    public FileReader() {
-        this.buffer = readFile(makePath());
-    }
-
-    public String readFile(Path path) {
-        StringBuilder result = new StringBuilder();
+    public String readFile(String resourceFileName) {
+        Path path = makePath(resourceFileName);
         try (BufferedReader reader = Files.newBufferedReader(path)) {
+            StringBuilder result = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 result.append(line).append("\n");
@@ -25,11 +21,9 @@ public class FileReader {
         }
     }
 
-    protected Path makePath(){
-        String resourceFileName = "products.md";
-        Path path;
+    protected Path makePath(String resourceFileName) {
         try  {
-            path = Paths.get(getClass().getClassLoader().getResource(resourceFileName).toURI());
+            Path path = Paths.get(getClass().getClassLoader().getResource(resourceFileName).toURI());
             return path;
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

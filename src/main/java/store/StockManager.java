@@ -1,13 +1,18 @@
 package store;
 
-import java.util.List;
 import view.InputView;
 
 public class StockManager {
+    private final PromotionInventory promotionInventory;
+
+    public StockManager(PromotionInventory promotionInventory) {
+        this.promotionInventory = promotionInventory;
+    }
+
     public StockRequirement getItemStock(Item item, int orderQuantity) {
         int modifiedQuantity = getModifiedQuantity(item, orderQuantity);
 
-        return item.calculateBuyAndGetQuantities(modifiedQuantity);
+        return item.calculateBuyAndGetQuantities(promotionInventory, modifiedQuantity);
     }
 
     protected int getModifiedQuantity(Item item, int orderQuantity) {
@@ -17,7 +22,7 @@ public class StockManager {
 
         item.canOrder(orderQuantity);
 
-        if (item.needAdditionalQuantity(orderQuantity)) {
+        if (item.needAdditionalQuantity(promotionInventory, orderQuantity)) {
             orderQuantity = applyUserInput(item, orderQuantity);
         }
         return orderQuantity;

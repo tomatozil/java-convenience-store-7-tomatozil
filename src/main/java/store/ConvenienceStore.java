@@ -1,19 +1,26 @@
 package store;
 
-import dto.OrderResult;
-import dto.Receipt;
+import store.dto.OrderResult;
+import store.dto.Receipt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ConvenienceStore {
-    private final ItemInventory inventory;
+    private final ItemInventory itemInventory;
+    private final PromotionInventory promotionInventory;
     private final StockManager stockManager;
     private final MembershipManager membershipManager;
 
-    public ConvenienceStore(ItemInventory inventory, StockManager stockManager, MembershipManager membershipManager) {
-        this.inventory = inventory;
+    public ConvenienceStore(
+            ItemInventory itemInventory,
+            PromotionInventory promotionInventory,
+            StockManager stockManager,
+            MembershipManager membershipManager
+    ) {
+        this.itemInventory = itemInventory;
+        this.promotionInventory = promotionInventory;
         this.stockManager = stockManager;
         this.membershipManager = membershipManager;
     }
@@ -37,8 +44,8 @@ public class ConvenienceStore {
         Map<Item, StockRequirement> itemStockTable = new HashMap<>();
 
         orderList.forEach((itemName, quantity) -> {
-            Item item = inventory.findItem(itemName)
-                    .orElseThrow(() -> new IllegalArgumentException("Item not found: " + itemName));
+            Item item = itemInventory.findItem(itemName)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
             StockRequirement stockRequirement = stockManager.getItemStock(item, quantity);
 
             itemStockTable.put(item, stockRequirement);

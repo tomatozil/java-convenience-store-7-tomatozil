@@ -1,15 +1,16 @@
 package store;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class Item {
     private final String name;
     private int price;
     private int generalQuantity;
     private int eventQuantity;
-    private PromotionType promotionType;
+    private String promotionType;
 
-    public Item(String name, int price, int generalQuantity, int eventQuantity, PromotionType promotionType) {
+    public Item(String name, int price, int generalQuantity, int eventQuantity, String promotionType) {
         this.name = name;
         this.price = price;
         this.generalQuantity = generalQuantity;
@@ -25,12 +26,45 @@ public class Item {
         return price;
     }
 
-    public void updateProduct(Item newOne) {
-        if (this.equals(newOne))
-            return ;
+    public String getItemString() {
+        StringBuilder sb = new StringBuilder();
+        if (promotionType != null) {
+            sb.append(getResultEvent()).append("\n");;
+        }
+        sb.append(getResultprintGeneral()).append("\n");
+
+        return sb.toString();
+    }
+
+    private String getResultEvent() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("- ").append(name).append(" ").append(price).append(" ");
+        if (eventQuantity > 0)
+            sb.append(eventQuantity).append(" ");
+        else
+            sb.append("재고 없음");
+        sb.append(promotionType);
+
+        return sb.toString();
+    }
+
+    private String getResultprintGeneral() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("- ").append(name).append(" ").append(price).append(" ");
+        if (generalQuantity > 0)
+            sb.append(generalQuantity);
+        else
+            sb.append("재고 없음");
+
+        return sb.toString();
+    }
+
+    public void updateItemInfo(Item newOne) {
         this.price = newOne.price;
-        this.generalQuantity = newOne.generalQuantity;
-        this.eventQuantity = newOne.eventQuantity;
+        if (newOne.generalQuantity != -1)
+            this.generalQuantity = newOne.generalQuantity;
+        if (newOne.eventQuantity != -1)
+            this.eventQuantity = newOne.eventQuantity;
         this.promotionType = newOne.promotionType;
     }
 
@@ -41,41 +75,29 @@ public class Item {
     }
 
     public boolean hasPromotion() {
-        return promotionType != PromotionType.NONE;
+        return promotionType != null;
     }
 
-    public boolean needAdditionalQuantity(int orderQuantity) {
-        return orderQuantity % promotionType.buyPlusGet() == promotionType.getBuy();
+    public boolean needAdditionalQuantity(PromotionInventory inventory, int orderQuantity) {
+        Optional<Promotion> promotion = inventory.findPromotion(promotionType);
+        if (promotion.isEmpty())
+            throw new IllegalArgumentException("해당 프로모션이 없습니다.");
+        return orderQuantity % promotion.get().buyPlusGet() == promotion.get().getBuy();
     }
 
-    public StockRequirement calculateBuyAndGetQuantities(int orderQuantity) {
-        int total = promotionType.buyPlusGet();
-        int buy = promotionType.getBuy();
-        int get = promotionType.getGet();
+    public StockRequirement calculateBuyAndGetQuantities(PromotionInventory inventory, int orderQuantity) {
+        Optional<Promotion> promotion = inventory.findPromotion(promotionType);
+        if (promotion.isEmpty())
+            throw new IllegalArgumentException("해당 프로모션이 없습니다.");
+
+        int total = promotion.get().buyPlusGet();
+        int buy = promotion.get().getBuy();
+        int get = promotion.get().getGet();
 
         int bundles = Math.min(orderQuantity / total, eventQuantity / total);
         int haveToBuy = bundles * buy + (orderQuantity - bundles * total);
         int getFree = bundles * get;
 
         return new StockRequirement(haveToBuy, getFree);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(generalQuantity, eventQuantity, promotionType);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        Item item = (Item) obj;
-        return generalQuantity == item.generalQuantity
-                && eventQuantity == item.eventQuantity
-                && promotionType.equals(item.promotionType);
     }
 }

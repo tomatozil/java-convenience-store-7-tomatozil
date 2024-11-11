@@ -1,4 +1,4 @@
-package dto;
+package store.dto;
 
 public class OrderResult {
     String name;

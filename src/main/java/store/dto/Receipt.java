@@ -1,4 +1,4 @@
-package dto;
+package store.dto;
 
 import java.util.List;
 
