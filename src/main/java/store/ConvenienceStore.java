@@ -1,5 +1,7 @@
 package store;
 
+import dto.OrderResult;
+import dto.Receipt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +18,19 @@ public class ConvenienceStore {
         this.membershipManager = membershipManager;
     }
 
-    public void order(Map<String, Integer> orderList) {
+    public Receipt order(Map<String, Integer> orderList) {
         Map<Item, StockRequirement> itemStockTable = createItemStockTable(orderList);
 
         int total = calculateTotalPrice(itemStockTable);
         int afterPromotion = calculateAfterPromotionPrice(itemStockTable);
         int afterMembership = membershipManager.membershipDiscount(afterPromotion);
 
+        List<OrderResult> orderResults = getAllOrderResults(itemStockTable);
+        int promotionDiscountPrice = total - afterPromotion;
+        int membershipDiscountPrice = afterPromotion - afterMembership;
+        int finalPrice = afterMembership;
 
+        return new Receipt(orderResults, total, promotionDiscountPrice, membershipDiscountPrice, finalPrice);
     }
 
     protected Map<Item, StockRequirement> createItemStockTable(Map<String, Integer> orderList) {
@@ -51,7 +58,18 @@ public class ConvenienceStore {
                 .sum();
     }
 
-    protected Map<String, Integer> getEventStockPerItem() {
-        return null;
+    protected List<OrderResult> getAllOrderResults(Map<Item, StockRequirement> itemStockTable) {
+        List <OrderResult> orderResults = new ArrayList<>();
+
+        itemStockTable.forEach((item, stockRequirement) -> {
+            String name = item.getName();
+            int totalQuantity = stockRequirement.getTotal();
+            int totalPrice = item.getPrice() * totalQuantity;
+            int freeQuantity = stockRequirement.getFree();
+
+            orderResults.add(new OrderResult(name, totalQuantity, totalPrice, freeQuantity));
+        });
+
+        return orderResults;
     }
 }
