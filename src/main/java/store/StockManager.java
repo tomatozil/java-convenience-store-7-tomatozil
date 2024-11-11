@@ -3,7 +3,7 @@ package store;
 import view.InputView;
 
 public class StockManager {
-    public OrderResult getOrderResult(Item item, int orderQuantity) {
+    public Order order(Item item, int orderQuantity) {
         int modifiedQuantity = getModifiedQuantity(item, orderQuantity);
         return item.calculateBuyAndGetQuantities(modifiedQuantity);
     }
