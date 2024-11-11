@@ -15,15 +15,15 @@ class ItemInventoryTest {
 
     @Test
     void 상품_등록_테스트() {
-        inventory.registerItem(new Item("핫도그", 4));
+        inventory.registerItem(new Item("핫도그", 2000, 4, 0, PromotionType.NONE));
 
         assertThat(inventory.productCnt()).isEqualTo(1);
     }
 
     @Test
     void 상품_조회_및_수정_테스트() {
-        inventory.registerItem(new Item("핫도그", 4));
-        inventory.registerItem(new Item("핫도그", 5));
+        inventory.registerItem(new Item("핫도그", 2000, 4, 0, PromotionType.NONE));
+        inventory.registerItem(new Item("핫도그", 2000, 5, 0, PromotionType.NONE));
 
         assertThatCode(
                 () -> inventory.findItem("핫도그").get().canOrder(5))
