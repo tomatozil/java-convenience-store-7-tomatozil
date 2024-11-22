@@ -12,4 +12,20 @@ public class OrderResult {
         this.totalPrice = totalPrice;
         this.freeQuantity = freeQuantity;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public int getFreeQuantity() {
+        return freeQuantity;
+    }
 }

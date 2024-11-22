@@ -65,8 +65,8 @@ public class Initializer {
         int quantity = Integer.parseInt(elements[2]);
 
         String promotionType;
-        int generalQuantity = -1;
-        int eventQuantity = -1;
+        int generalQuantity = 0;
+        int eventQuantity = 0;
 
         if ("null".equals(elements[3])) {
             promotionType = null;

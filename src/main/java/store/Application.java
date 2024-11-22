@@ -3,6 +3,7 @@ package store;
 import java.util.Map;
 import store.dto.Receipt;
 import view.InputView;
+import view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
@@ -17,18 +18,23 @@ public class Application {
                 new MembershipManager()
         );
 
-        itemInventory.printItems();
-
-        Map<String, Integer> orderList;
         while (true) {
             try {
-                orderList = InputView.readOrderList();
+                itemInventory.printItems();
+
+                Map<String, Integer> orderList = InputView.readOrderList();
+
+                Receipt receipt = convenienceStore.order(orderList);
+
+                OutputView.printReceipt(receipt);
+
+                String close = InputView.readOrderAgain();
+                if (close.equalsIgnoreCase("Y"))
+                    continue;
                 break;
             } catch (IllegalArgumentException e) {
                 System.out.println("[ERROR] " + e.getMessage());
             }
         }
-
-        Receipt receipt = convenienceStore.order(orderList);
     }
 }

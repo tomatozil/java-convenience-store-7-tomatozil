@@ -2,6 +2,7 @@ package store;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedMap;
 
 public class Item {
     private final String name;
@@ -60,11 +61,20 @@ public class Item {
     }
 
     public void updateItemInfo(Item newOne) {
-        this.price = newOne.price;
-        if (newOne.generalQuantity != -1)
+        if (this.promotionType != null && newOne.promotionType == null) {
             this.generalQuantity = newOne.generalQuantity;
-        if (newOne.eventQuantity != -1)
+            return;
+        }
+
+        if (this.promotionType == null && newOne.promotionType != null) {
             this.eventQuantity = newOne.eventQuantity;
+            this.promotionType = newOne.promotionType;
+            return;
+        }
+
+        this.price = newOne.price;
+        this.generalQuantity = newOne.generalQuantity;
+        this.eventQuantity = newOne.eventQuantity;
         this.promotionType = newOne.promotionType;
     }
 
@@ -86,6 +96,9 @@ public class Item {
     }
 
     public StockRequirement calculateBuyAndGetQuantities(PromotionInventory inventory, int orderQuantity) {
+        if (promotionType == null)
+            return new StockRequirement(orderQuantity, 0);
+
         Optional<Promotion> promotion = inventory.findPromotion(promotionType);
         if (promotion.isEmpty())
             throw new IllegalArgumentException("해당 프로모션이 없습니다.");

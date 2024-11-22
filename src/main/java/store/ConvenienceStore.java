@@ -28,16 +28,19 @@ public class ConvenienceStore {
     public Receipt order(Map<String, Integer> orderList) {
         Map<Item, StockRequirement> itemStockTable = createItemStockTable(orderList);
 
-        int total = calculateTotalPrice(itemStockTable);
+        int totalQuantity = itemStockTable.values().stream()
+                .mapToInt(StockRequirement::getTotal)
+                .sum();
+        int totalPrice = calculateTotalPrice(itemStockTable);
         int afterPromotion = calculateAfterPromotionPrice(itemStockTable);
         int afterMembership = membershipManager.membershipDiscount(afterPromotion);
 
         List<OrderResult> orderResults = getAllOrderResults(itemStockTable);
-        int promotionDiscountPrice = total - afterPromotion;
+        int promotionDiscountPrice = totalPrice - afterPromotion;
         int membershipDiscountPrice = afterPromotion - afterMembership;
         int finalPrice = afterMembership;
 
-        return new Receipt(orderResults, total, promotionDiscountPrice, membershipDiscountPrice, finalPrice);
+        return new Receipt(orderResults, totalQuantity, totalPrice, promotionDiscountPrice, membershipDiscountPrice, finalPrice);
     }
 
     protected Map<Item, StockRequirement> createItemStockTable(Map<String, Integer> orderList) {
