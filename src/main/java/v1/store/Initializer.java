@@ -1,9 +1,8 @@
-package store;
+package v1.store;
 
-import file.FileReader;
+import v1.file.FileReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class Initializer {
     private final FileReader fileReader;

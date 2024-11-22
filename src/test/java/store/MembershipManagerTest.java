@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import v1.store.Item;
+import v1.store.MembershipManager;
+import v1.store.StockRequirement;
 
 public class MembershipManagerTest {
     private MembershipManager manager;
@@ -13,7 +16,7 @@ public class MembershipManagerTest {
     @BeforeEach
     void 초기_세팅() {
         item = new Item("에너지바", 1500, 0, 5, "MD추천상품");
-        stockRequirement = new StockRequirement(1, 1);
+//        stockRequirement = new StockRequirement(1, 1);
     }
 
     @Test

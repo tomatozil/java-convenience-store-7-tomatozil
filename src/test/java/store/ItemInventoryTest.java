@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import v1.store.Item;
+import v1.store.ItemInventory;
 
 class ItemInventoryTest {
     private ItemInventory inventory;

@@ -1,9 +1,15 @@
-package store;
+package v1;
 
 import java.util.Map;
-import store.dto.Receipt;
-import view.InputView;
-import view.OutputView;
+import v1.store.ConvenienceStore;
+import v1.store.Initializer;
+import v1.store.ItemInventory;
+import v1.store.MembershipManager;
+import v1.store.PromotionInventory;
+import v1.store.StockManager;
+import v1.store.dto.Receipt;
+import v1.view.InputView;
+import v1.view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
@@ -13,7 +19,6 @@ public class Application {
 
         ConvenienceStore convenienceStore = new ConvenienceStore(
                 itemInventory,
-                promotionInventory,
                 new StockManager(promotionInventory),
                 new MembershipManager()
         );

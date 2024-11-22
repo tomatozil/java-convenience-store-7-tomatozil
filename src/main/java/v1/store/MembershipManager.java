@@ -1,6 +1,6 @@
-package store;
+package v1.store;
 
-import view.InputView;
+import v1.view.InputView;
 
 public class MembershipManager {
     private static final int LIMIT_DISCOUNT_PRICE = 8000;

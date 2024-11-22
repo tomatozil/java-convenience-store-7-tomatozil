@@ -1,4 +1,4 @@
-package store;
+package v1.store;
 
 import java.util.ArrayList;
 import java.util.List;

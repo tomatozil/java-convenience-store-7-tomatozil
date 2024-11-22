@@ -1,9 +1,9 @@
-package view;
+package v1.view;
 
 import java.util.List;
-import store.Item;
-import store.dto.OrderResult;
-import store.dto.Receipt;
+import v1.store.Item;
+import v1.store.dto.OrderResult;
+import v1.store.dto.Receipt;
 
 public class OutputView {
     public static void printProducts(List<Item> items) {
@@ -29,7 +29,7 @@ public class OutputView {
         orderResults.forEach(orderResult -> {
             sb.append(GPXFormatter.formatLine(orderResult.getName(),
                     String.valueOf(orderResult.getTotalQuantity()),
-                    String.valueOf(orderResult.getTotalPrice())));
+                    String.format("%,d", orderResult.getTotalPrice())));
             sb.append("\n");
         });
 
@@ -43,13 +43,21 @@ public class OutputView {
                 });
 
         sb.append("================================\n");
-        sb.append(GPXFormatter.formatLine("총구매액", String.valueOf(receipt.getTotalQuantity()), String.valueOf(receipt.getTotalPrice())));
+        sb.append(GPXFormatter.formatLine("총구매액",
+                String.valueOf(receipt.getTotalQuantity()),
+                String.valueOf(String.format("%,d", receipt.getTotalPrice()))));
         sb.append("\n");
-        sb.append(GPXFormatter.formatLine("행사할인", "", "-" + receipt.getPromotionDiscountPrice()));
+        sb.append(GPXFormatter.formatLine("행사할인",
+                "",
+                "-" + String.format("%,d", receipt.getPromotionDiscountPrice())));
         sb.append("\n");
-        sb.append(GPXFormatter.formatLine("멤버십할인", "", "-" + receipt.getMembershipDiscountPrice()));
+        sb.append(GPXFormatter.formatLine("멤버십할인",
+                "",
+                "-" + String.format("%,d", receipt.getMembershipDiscountPrice())));
         sb.append("\n");
-        sb.append(GPXFormatter.formatLine("내실돈", "", String.valueOf(receipt.getFinalPrice())));
+        sb.append(GPXFormatter.formatLine("내실돈",
+                "",
+                String.format("%,d", receipt.getFinalPrice())));
         sb.append("\n");
 
         System.out.println(sb);

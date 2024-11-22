@@ -1,6 +1,7 @@
-package store;
+package v1.store;
 
-import view.InputView;
+import v1.view.InputView;
+import v1.view.OutputView;
 
 public class StockManager {
     private final PromotionInventory promotionInventory;

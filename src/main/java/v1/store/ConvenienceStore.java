@@ -1,32 +1,31 @@
-package store;
+package v1.store;
 
-import store.dto.OrderResult;
-import store.dto.Receipt;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import v1.store.dto.OrderResult;
+import v1.store.dto.Receipt;
 
 public class ConvenienceStore {
     private final ItemInventory itemInventory;
-    private final PromotionInventory promotionInventory;
     private final StockManager stockManager;
     private final MembershipManager membershipManager;
 
     public ConvenienceStore(
             ItemInventory itemInventory,
-            PromotionInventory promotionInventory,
             StockManager stockManager,
             MembershipManager membershipManager
     ) {
         this.itemInventory = itemInventory;
-        this.promotionInventory = promotionInventory;
         this.stockManager = stockManager;
         this.membershipManager = membershipManager;
     }
 
     public Receipt order(Map<String, Integer> orderList) {
         Map<Item, StockRequirement> itemStockTable = createItemStockTable(orderList);
+
+        itemStockTable.forEach(itemInventory::reductItemStock);
 
         int totalQuantity = itemStockTable.values().stream()
                 .mapToInt(StockRequirement::getTotal)
@@ -40,7 +39,12 @@ public class ConvenienceStore {
         int membershipDiscountPrice = afterPromotion - afterMembership;
         int finalPrice = afterMembership;
 
-        return new Receipt(orderResults, totalQuantity, totalPrice, promotionDiscountPrice, membershipDiscountPrice, finalPrice);
+        return new Receipt(orderResults,
+                totalQuantity,
+                totalPrice,
+                promotionDiscountPrice,
+                membershipDiscountPrice,
+                finalPrice);
     }
 
     protected Map<Item, StockRequirement> createItemStockTable(Map<String, Integer> orderList) {
@@ -51,7 +55,8 @@ public class ConvenienceStore {
                     .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다."));
             StockRequirement stockRequirement = stockManager.getItemStock(item, quantity);
 
-            itemStockTable.put(item, stockRequirement);
+            if (!stockRequirement.isEmpty())
+                itemStockTable.put(item, stockRequirement);
         });
         return itemStockTable;
     }
@@ -69,7 +74,7 @@ public class ConvenienceStore {
     }
 
     protected List<OrderResult> getAllOrderResults(Map<Item, StockRequirement> itemStockTable) {
-        List <OrderResult> orderResults = new ArrayList<>();
+        List<OrderResult> orderResults = new ArrayList<>();
 
         itemStockTable.forEach((item, stockRequirement) -> {
             String name = item.getName();

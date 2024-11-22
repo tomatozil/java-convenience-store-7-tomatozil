@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import v1.store.Item;
+import v1.store.PromotionInventory;
+import v1.store.StockManager;
+import v1.store.StockRequirement;
 
 public class StockManagerTest {
     private StockManager manager;

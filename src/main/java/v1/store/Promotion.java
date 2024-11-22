@@ -1,4 +1,4 @@
-package store;
+package v1.store;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import java.time.format.DateTimeFormatter;
